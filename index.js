@@ -9,6 +9,8 @@ const RestaurantCard = () => {
   );
 };
 
+console.log("first");
+
 const Body = () => {
   return (
     <div className="body">
