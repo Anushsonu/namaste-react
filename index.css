@@ -23,3 +23,25 @@
 .logo{
     width: 120px;
 }
+
+.res-card{
+    border: 1px solid transparent;
+    width: 300px;
+    margin: 1rem;
+    background-color: #e5e5e5;
+}
+
+.res-card:hover{
+    border: 1px solid black;
+}
+
+.res-logo{
+    width: 100%;
+}
+
+.body .res-container{
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    margin: 1rem;
+}
