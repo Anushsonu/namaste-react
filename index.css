@@ -46,3 +46,16 @@
     flex-wrap: wrap;
     margin: 1rem;
 }
+
+.shimmers{
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+.shimmers .shimmer{
+    width: 300px;
+    height: 400px;
+    margin: 1rem 0;
+    background-color: #e5e5e5;
+}

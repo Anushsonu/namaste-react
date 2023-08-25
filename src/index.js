@@ -2,10 +2,14 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import Header from "./components/Header";
 import Body from "./components/Body";
+import { createBrowserRouter, RouterProvider, Outlet } from "react-router-dom";
+import ContactUs from "./components/ContactUs";
+import About from "./components/About";
+import Error from "./components/Error";
 
 const RestaurantCard = (props) => {
   const resData = props?.resData?.info;
-  console.log("Res data ::", resData);
+  // console.log("Res data ::", resData);
   return (
     <div className="res-card">
       <img
@@ -26,9 +30,34 @@ const RestaurantCard = (props) => {
 const AppLayout = () => (
   <div className="app">
     <Header />
-    <Body />
+    <Outlet />
   </div>
 );
 
+const appRouter = createBrowserRouter([
+  {
+    path: "/",
+    element: <AppLayout />,
+    errorElement: <Error />,
+    children: [
+      {
+        path: "/",
+        element: <Body />,
+        errorElement: <Error />,
+      },
+      {
+        path: "/contact",
+        element: <ContactUs />,
+        errorElement: <Error />,
+      },
+      {
+        path: "/about",
+        element: <About />,
+        errorElement: <Error />,
+      },
+    ],
+  },
+]);
+
 const root = ReactDOM.createRoot(document.getElementById("root"));
-root.render(<AppLayout />);
+root.render(<RouterProvider router={appRouter} />);

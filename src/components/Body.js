@@ -1,9 +1,12 @@
 import RestaurantCard from "./RestaurantCard";
 import resList from "../utils/mockData";
 import { useEffect, useState } from "react";
+import Shimmer from "./Shimmer";
 
 const Body = () => {
   const [res, setRes] = useState([]);
+  const [filteredRes, setFilteredRes] = useState([]);
+  const [searchText, setSearchText] = useState("");
 
   useEffect(() => {
     fetchData();
@@ -14,17 +17,37 @@ const Body = () => {
       "https://www.swiggy.com/dapi/restaurants/list/v5?lat=12.9029804&lng=77.6241936&is-seo-homepage-enabled=true&page_type=DESKTOP_WEB_LISTING"
     );
     const json = await data.json();
-    console.log(
-      "Swiggy data :::",
+    setRes(
       json?.data?.cards[2]?.card?.card?.gridElements?.infoWithStyle?.restaurants
     );
-    setRes(
+    setFilteredRes(
       json?.data?.cards[2]?.card?.card?.gridElements?.infoWithStyle?.restaurants
     );
   };
 
-  return (
+  return res.length === 0 ? (
+    <Shimmer />
+  ) : (
     <div className="body">
+      <div className="search">
+        <input
+          type="text"
+          value={searchText}
+          onChange={(e) => {
+            setSearchText(e?.target?.value);
+          }}
+        />
+        <button
+          onClick={() => {
+            const filtered = res.filter((val) =>
+              val?.info?.name.toLowerCase().includes(searchText.toLowerCase())
+            );
+            setFilteredRes(filtered);
+          }}
+        >
+          Search
+        </button>
+      </div>
       <button
         className="filter"
         onClick={() => {
@@ -35,7 +58,7 @@ const Body = () => {
         Filter
       </button>
       <div className="res-container">
-        {res.map((restaurant, index) => (
+        {filteredRes.map((restaurant, index) => (
           <RestaurantCard key={index} resData={restaurant} />
         ))}
       </div>
