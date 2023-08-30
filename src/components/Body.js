@@ -2,6 +2,7 @@ import RestaurantCard from "./RestaurantCard";
 import resList from "../utils/mockData";
 import { useEffect, useState } from "react";
 import Shimmer from "./Shimmer";
+import { Link } from "react-router-dom";
 
 const Body = () => {
   const [res, setRes] = useState([]);
@@ -25,9 +26,13 @@ const Body = () => {
     );
   };
 
-  return res.length === 0 ? (
-    <Shimmer />
-  ) : (
+  if (res.length === 0) {
+    return <Shimmer />;
+  }
+
+  console.log("Filtered res :::", filteredRes);
+
+  return (
     <div className="body">
       <div className="search">
         <input
@@ -59,7 +64,9 @@ const Body = () => {
       </button>
       <div className="res-container">
         {filteredRes.map((restaurant, index) => (
-          <RestaurantCard key={index} resData={restaurant} />
+          <Link to={"/restaurants/" + restaurant?.info?.id}>
+            <RestaurantCard key={index} resData={restaurant} />
+          </Link>
         ))}
       </div>
     </div>

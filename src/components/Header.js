@@ -1,17 +1,26 @@
 import React from "react";
 import { LOGO_URL } from "../utils/constants";
+import { Link } from "react-router-dom";
 
 function Header() {
   return (
     <div className="header">
       <div className="logo-container">
-        <img className="logo" src={LOGO_URL} />
+        <Link to={"/"}>
+          <img className="logo" src={LOGO_URL} />
+        </Link>
       </div>
       <div className="nav-items">
         <ul>
-          <li>Home</li>
-          <li>About</li>
-          <li>Contact</li>
+          <li>
+            <Link to={"/"}>Home</Link>
+          </li>
+          <li>
+            <Link to={"/about"}>About us</Link>
+          </li>
+          <li>
+            <Link to={"/contact"}>Contact us</Link>
+          </li>
           <li>Cart</li>
         </ul>
       </div>
