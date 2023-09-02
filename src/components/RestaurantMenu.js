@@ -16,8 +16,6 @@ const RestaurantMenu = () => {
     );
     const res = await data.json();
     setResInfo(res?.data);
-    // console.log("Menu data :::", res);
-    // console.log("State data :::", resInfo?.cards[0]?.card?.card?.info);
   };
   if (resInfo === null) {
     return <Shimmer />;
