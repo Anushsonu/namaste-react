@@ -3,11 +3,16 @@ import resList from "../utils/mockData";
 import { useEffect, useState } from "react";
 import Shimmer from "./Shimmer";
 import { Link } from "react-router-dom";
+import useIsOnline from "../utils/useIsOnline";
 
 const Body = () => {
   const [res, setRes] = useState([]);
   const [filteredRes, setFilteredRes] = useState([]);
   const [searchText, setSearchText] = useState("");
+
+  const onlineStatus = useIsOnline();
+  // console.log("Res :::", filteredRes);
+  if (onlineStatus === false) return <h1>Chech internet !!!</h1>;
 
   useEffect(() => {
     fetchData();
@@ -30,12 +35,11 @@ const Body = () => {
     return <Shimmer />;
   }
 
-  console.log("Filtered res :::", filteredRes);
-
   return (
     <div className="body">
-      <div className="search">
+      <div className="flex my-5 ml-5">
         <input
+          className="border p-2 mr-5"
           type="text"
           value={searchText}
           onChange={(e) => {
@@ -43,28 +47,36 @@ const Body = () => {
           }}
         />
         <button
+          className="border px-5 py-3 rounded-md bg-blue-400 mr-5"
           onClick={() => {
-            const filtered = res.filter((val) =>
-              val?.info?.name.toLowerCase().includes(searchText.toLowerCase())
-            );
-            setFilteredRes(filtered);
+            if (searchText === "") {
+              setFilteredRes(res);
+            } else {
+              const filtered = res.filter((val) =>
+                val?.info?.name.toLowerCase().includes(searchText.toLowerCase())
+              );
+              setFilteredRes(filtered);
+            }
           }}
         >
           Search
         </button>
+        <button
+          className="border px-5 py-3 bg-pink-400 rounded-md transform transition-transform hover:scale-95"
+          onClick={() => {
+            const filtered = res.filter((val) => val?.info?.avgRating > 4);
+            setFilteredRes(filtered);
+          }}
+        >
+          Filter Top rated
+        </button>
       </div>
-      <button
-        className="filter"
-        onClick={() => {
-          const filtered = res.filter((val) => val?.info?.avgRating > 4);
-          setRes(filtered);
-        }}
-      >
-        Filter
-      </button>
-      <div className="res-container">
+      <div className="flex flex-wrap">
         {filteredRes.map((restaurant, index) => (
-          <Link to={"/restaurants/" + restaurant?.info?.id}>
+          <Link
+            to={"/restaurants/" + restaurant?.info?.id}
+            key={restaurant?.info?.id}
+          >
             <RestaurantCard key={index} resData={restaurant} />
           </Link>
         ))}

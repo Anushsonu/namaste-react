@@ -1,30 +1,43 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom/client";
 import Header from "./components/Header";
 import Body from "./components/Body";
-import {
-  createBrowserRouter,
-  RouterProvider,
-  Outlet,
-  Link,
-} from "react-router-dom";
+import { createBrowserRouter, RouterProvider, Outlet } from "react-router-dom";
 import ContactUs from "./components/ContactUs";
 import About from "./components/About";
 import Error from "./components/Error";
 import RestaurantMenu from "./components/RestaurantMenu";
+import Demo from "./components/Demo";
+import UserContext from "./utils/UserContext";
+import { Provider } from "react-redux";
+import appStore from "./utils/appStore";
+import Cart from "./components/Cart";
 
-const AppLayout = () => (
-  <div className="app">
-    <Header />
-    <Outlet />
-  </div>
-);
+const AppLayout = () => {
+  const [loginName, setLoginName] = useState();
+  useEffect(() => {
+    const data = {
+      name: "anush",
+    };
+    setLoginName(data.name);
+  }, []);
+  return (
+    <Provider store={appStore}>
+      <UserContext.Provider value={{ loggedInUser: loginName }}>
+        <div className="app">
+          <Header />
+          <Outlet />
+        </div>
+      </UserContext.Provider>
+    </Provider>
+  );
+};
 
 const appRouter = createBrowserRouter([
   {
     path: "/",
     element: <AppLayout />,
-    errorElement: <Error />,
+    // errorElement: <Error />,
     children: [
       {
         path: "/",
@@ -44,6 +57,16 @@ const appRouter = createBrowserRouter([
       {
         path: "/restaurants/:resId",
         element: <RestaurantMenu />,
+        errorElement: <Error />,
+      },
+      {
+        path: "/demo",
+        element: <Demo />,
+        errorElement: <Error />,
+      },
+      {
+        path: "/cart",
+        element: <Cart />,
         errorElement: <Error />,
       },
     ],

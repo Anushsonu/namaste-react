@@ -1,54 +1,42 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Shimmer from "./Shimmer";
 import { useParams } from "react-router-dom";
+import useMenuRestaurant from "../utils/useRestaurantMenu";
+import RestaurantCategory from "./RestaurantCategory";
 
 const RestaurantMenu = () => {
   const { resId } = useParams();
-  const [resInfo, setResInfo] = useState(null);
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  const fetchData = async () => {
-    const data = await fetch(
-      `https://www.swiggy.com/dapi/menu/pl?page-type=REGULAR_MENU&complete-menu=true&lat=12.896257078982773&lng=77.5804116949439&restaurantId=` +
-        resId
-    );
-    const res = await data.json();
-    setResInfo(res?.data);
-  };
+  const resInfo = useMenuRestaurant(resId);
+  const [showIndex, setShowIndex] = useState(null);
   if (resInfo === null) {
     return <Shimmer />;
   }
+  const { name, cuisines, costForTwoMessage } =
+    resInfo?.cards[0]?.card?.card?.info;
 
-  const {
-    name,
-    cuisines,
-    cloudinaryImageId,
-    costForTwoMessage,
-    avgRatingString,
-  } = resInfo?.cards[0]?.card?.card?.info;
+  const categories =
+    resInfo?.cards[2]?.groupedCard?.cardGroupMap?.REGULAR?.cards.filter(
+      (c) =>
+        c?.card?.card?.["@type"] ===
+        "type.googleapis.com/swiggy.presentation.food.v2.ItemCategory"
+    );
 
-  const { itemCards } =
-    resInfo?.cards[2]?.groupedCard?.cardGroupMap?.REGULAR?.cards[1]?.card?.card;
-
-  console.log("Items Card :::", itemCards);
-  console.log("State data :::", resInfo);
+  // console.log(categories);
 
   return (
-    <div className="menu">
-      <h1>{name}</h1>
-      <h3>{cuisines?.join(", ")}</h3>
-      <h3>{costForTwoMessage}</h3>
-      <h2>Menu:</h2>
-      <ul>
-        {itemCards?.map((item) => (
-          <li key={item?.card?.info?.id}>
-            {item.card.info.name} -{" "}
-            {item.card.info.price / 100 || item.card.info.defaultPrice / 100}
-          </li>
-        ))}
-      </ul>
+    <div className="text-center">
+      <h1 className="font-bold py-5 text-2xl">{name}</h1>
+      <h3>
+        {cuisines?.join(", ")} - {costForTwoMessage}
+      </h3>
+      {categories.map((category, index) => (
+        <RestaurantCategory
+          key={category?.card?.card?.title}
+          data={category?.card?.card}
+          showItems={index === showIndex ? true : false}
+          setShowIndex={() => setShowIndex(index)}
+        />
+      ))}
     </div>
   );
 };
